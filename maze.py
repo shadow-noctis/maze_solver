@@ -84,11 +84,43 @@ class Maze:
         return self._solve_r(0, 0)
 
     def _solve_r(self, i, j):
-        self._animate(self)
+        self._animate()
         self._cells[i][j]._visited = True
         if i == len(self._cells) -1 and j == len(self._cells[i]) -1:
             return True
-
+        #Up
+        if j - 1 >= 0:
+            if self._cells[i][j -1].has_bottom_wall == False and self._cells[i][j -1]._visited == False:
+                self._cells[i][j].draw_move(self._cells[i][j-1])
+                if self._solve_r(i, j-1):
+                    return True
+                else:
+                    self._cells[i][j].draw_move(self._cells[i][j-1], undo=True)
+        #Right
+        if i + 1 <= len(self._cells) -1:
+            if self._cells[i +1][j].has_left_wall == False and self._cells[i+1][j]._visited == False:
+                self._cells[i][j].draw_move(self._cells[i+1][j])
+                if self._solve_r(i +1, j):
+                    return True
+                else:
+                    self._cells[i][j].draw_move(self._cells[i + 1][j], undo=True)
+        #Bottom
+        if j + 1 <= len(self._cells[i]) -1:
+            if self._cells[i][j + 1].has_top_wall == False and self._cells[i][j+1]._visited == False:
+                self._cells[i][j].draw_move(self._cells[i][j+1])
+                if self._solve_r(i, j +1):
+                    return True
+                else:
+                    self._cells[i][j].draw_move(self._cells[i][j+1], undo=True)
+        #Left
+        if i - 1 >= 0:
+            if self._cells[i - 1][j].has_right_wall == False and self._cells[i - 1][j]._visited == False:
+                self._cells[i][j].draw_move(self._cells[i - 1][j])
+                if self._solve_r(i -1, j):
+                    return True
+                else:
+                    self._cells[i][j].draw_move(self._cells[i - 1][j], undo=True)
+        return False
 
     def _animate(self):
         self._win.redraw()
